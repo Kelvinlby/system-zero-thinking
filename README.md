@@ -4,6 +4,6 @@
 <div align="center">
   
 [![paper](https://img.shields.io/static/v1?label=Preprint&message=Download&color=orange&style=for-the-badge)](https://raw.githubusercontent.com/Kelvinlby/system-zero-thinking/main/assets/manuscript.pdf)
-[![Website](https://img.shields.io/static/v1?label=Project&message=Website&color=white&style=for-the-badge)](https://system-zero-thinking.github.io/)
+[![Website](https://img.shields.io/static/v1?label=Project&message=Website&color=white&style=for-the-badge)](https://kelvinlby.github.io/system-zero-thinking)
 
 </div>
