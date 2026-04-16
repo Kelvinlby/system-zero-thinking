@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Why System 1/2 Cannot Plan — Structural Failures and Desiderata for Embodied Agents</title>
+<meta name="description" content="A position paper arguing that System 1/2 decompositions are structurally incapable of long-horizon embodied planning, with empirical failure modes and architectural desiderata." />
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <p class="eyebrow">Position paper &middot; Preprint</p>
+    <h1>Why System 1/2 Cannot Plan</h1>
+    <p class="subtitle">Structural Failures and Desiderata for Embodied Agents</p>
+    <p class="authors">
+      <a href="mailto:bl59@illinois.edu">Bingyang Kelvin Liu</a>
+      &nbsp;&middot;&nbsp;
+      <a href="mailto:ziyu17@illinois.edu">Ziyu Patrick Chen</a>
+    </p>
+    <p class="affiliation">Grainger College of Engineering, University of Illinois Urbana&#8209;Champaign</p>
+    <nav class="actions">
+      <a class="btn btn-primary" href="assets/manuscript.pdf">Read the PDF</a>
+      <a class="btn" href="#abstract">Abstract</a>
+      <a class="btn" href="#contributions">Contributions</a>
+      <a class="btn" href="#findings">Findings</a>
+      <a class="btn" href="#experiments-media">Footage</a>
+      <a class="btn" href="#desiderata">Desiderata</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section id="abstract">
+    <h2>Abstract</h2>
+    <p>
+      The embodied AI community has converged on dual-process (System 1/2) architectures,
+      pairing fast reactive policies with slow deliberative planners. This paper is a
+      <em>position / problem-identification</em> paper: we argue that this decomposition
+      is architecturally incapable of genuine long-horizon planning&mdash;not as a
+      quantitative shortfall, but as a structural one&mdash;and we characterize what any
+      alternative architecture would have to look like, without proposing or validating
+      a specific solution.
+    </p>
+    <p>
+      We identify three structural failure modes of the S1/S2 decomposition: the
+      <strong>guidance bottleneck</strong>, <strong>reactive prior domination</strong>, and
+      <strong>cross-scale binding failure</strong>. We demonstrate empirically that a
+      state-of-the-art VA model drops from <strong>98.0%</strong> to <strong>36.0%</strong>
+      instruction-following rate when instructions conflict with the reactive prior, and
+      that composed out-of-distribution tasks yield a mean success rate of
+      <strong>24.7%</strong> against an in-distribution baseline exceeding 90%.
+    </p>
+    <p>
+      We then articulate four <em>desiderata</em> that any architecture aiming to escape
+      these failure modes should satisfy: a single shared latent state, intrinsic
+      multi-timescale temporal structure, continuous bidirectional coupling between
+      motor dynamics and deliberative context, and a stability / attractor bias. We do
+      not claim these desiderata are unique, minimal, or sufficient; establishing either
+      property is beyond the scope of a single paper and is left as an open problem. We
+      sketch one plausible direction&mdash;a shared-state dynamical architecture with
+      structured temporal modes&mdash;as an illustration, not as a validated solution.
+    </p>
+  </section>
+
+  <section id="headline">
+    <h2>The Headline</h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <p class="stat-num">98.0% &rarr; 36.0%</p>
+        <p class="stat-label">Instruction-following rate when a dual-arm directive conflicts with the reactive prior.</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">24.7%</p>
+        <p class="stat-label">Mean success on composed out-of-distribution tasks, against a &gt;90% in-distribution baseline.</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">3 Failures, 4 Desiderata</p>
+        <p class="stat-label">Three structural failure modes identified, and four desiderata any successor architecture should satisfy.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contributions">
+    <h2>What We Contribute</h2>
+    <ol>
+      <li>A <strong>structural analysis</strong> of why the S1/S2 guidance interface cannot support long-horizon planning.</li>
+      <li><strong>Empirical evidence</strong> sharpening the failure: the 98%&rarr;36% instruction-following collapse and the 24.7% composed-OOD success rate.</li>
+      <li>Four <em>desiderata</em> &mdash; properties any candidate replacement architecture should be measured against.</li>
+      <li>A brief <strong>sketch</strong> of one plausible direction, offered as illustration rather than proposal.</li>
+    </ol>
+    <p class="callout">
+      This is a <em>problem-identification</em> paper, not a solution paper. We deliberately do not propose,
+      or validate a specific architecture; identifying, designing, and validating such an architecture is a
+      program of work spanning many papers, not a single contribution.
+    </p>
+  </section>
+
+  <section id="findings">
+    <h2>Three Structural Failure Modes</h2>
+
+    <article class="finding">
+      <h3>1. The Guidance Bottleneck</h3>
+      <p>
+        In current S1/S2 systems, the deliberative module issues a directive and the reactive module executes
+        it without any feedback channel about motor-level state, execution difficulty, or plan feasibility. This
+        one-way, low-bandwidth channel is the <em>guidance interface</em>. Three problems follow:
+      </p>
+      <ul>
+        <li><strong>Motor feasibility is invisible to the planner.</strong> The planner cannot determine whether the reactive policy is <em>capable</em> of a compound behavior.</li>
+        <li><strong>The deliberative&ndash;reactive boundary is not fixed.</strong> A two-system decomposition must assign each degree of freedom to one side <em>a priori</em>, yet competent behavior requires either.</li>
+        <li><strong>Temporal coupling is bidirectional and continuous.</strong> Motor-level events must modulate deliberative priorities in real time, not via a perceive&ndash;abstract&ndash;re-plan loop at a slower timescale.</li>
+      </ul>
+    </article>
+
+    <article class="finding">
+      <h3>2. Reactive Prior Domination</h3>
+      <p>
+        Even when the System 2 module produces fine-grained instructions, the reactive prior of the System 1
+        module often overrides them. Systematic evaluations of video and action generation models reveal that
+        even under explicit behavioral instructions, models still produce the most probable motion from their
+        training distribution rather than following the input instruction.
+      </p>
+      <p>
+        <strong>Experiment 1 &mdash; Limb-instruction following.</strong> LingBot-VA is tested on 50 pick-and-place
+        trials with explicit limb-arm instructions. When the instruction aligns with the model's default arm
+        choice, the following rate is <strong>49/50 (98.0%)</strong>. When the instruction conflicts with the
+        prior, the rate drops to <strong>18/50 (36.0%)</strong>.
+      </p>
+    </article>
+
+    <article class="finding">
+      <h3>3. Cross-Scale Binding Failure</h3>
+      <p>
+        A cross-scale binding task is any task in which the optimal low-level action depends on deliberative
+        knowledge&mdash;a specific past event, a multi-step tactical plan, a context-dependent preference&mdash;
+        that the guidance interface does not transmit at the required granularity.
+      </p>
+      <p>
+        <strong>Experiment 2 &mdash; Composed OOD tasks.</strong> Three composed pairs of distinct in-distribution
+        behaviors were evaluated on 50 trials each:
+      </p>
+      <ul>
+        <li><em>handover_then_place_phone_stand</em> &mdash; 28.0%</li>
+        <li><em>press_stapler_while_holding</em> &mdash; 22.0%</li>
+        <li><em>open_laptop_then_place_object_inside</em> &mdash; 24.0%</li>
+      </ul>
+      <p>Mean: <strong>24.7%</strong> &mdash; a significant degradation from the &gt;90% in-distribution baseline.</p>
+    </article>
+
+  </section>
+
+  <section id="experiments-media">
+    <h2>Experimental Footage</h2>
+    <p>
+      Rollouts from the two experiments reported above. Each slot is a placeholder pending the author's
+      video upload; see the gathering checklist below the gallery.
+    </p>
+
+    <h3>Experiment 1 &middot; Limb-instruction following (LingBot-VA)</h3>
+    <div class="media-grid">
+      <div class="media-slot">
+        <p class="slot-tag">[ Placeholder &middot; Video ]</p>
+        <p class="slot-title">Aligned trial &mdash; success</p>
+        <p class="slot-meta">Instruction matches the model's default arm choice. Representative of the 49/50 (98.0%) success regime.</p>
+      </div>
+      <div class="media-slot">
+        <p class="slot-tag">[ Placeholder &middot; Video ]</p>
+        <p class="slot-title">Conflict trial &mdash; prior override</p>
+        <p class="slot-meta">Target is on the left; prompt says "use the right arm"; policy grabs with left anyway. Representative of the 18/50 (36.0%) failure regime.</p>
+      </div>
+    </div>
+
+    <h3>Experiment 2 &middot; Composed out-of-distribution tasks (RoboTwin 2.0)</h3>
+    <div class="media-grid">
+      <div class="media-slot">
+        <p class="slot-tag">[ Placeholder &middot; Video ]</p>
+        <p class="slot-title">handover_then_place_phone_stand</p>
+        <p class="slot-meta">Bimanual microphone handover followed by placing a phone onto a stand. 28.0% success.</p>
+      </div>
+      <div class="media-slot">
+        <p class="slot-tag">[ Placeholder &middot; Video ]</p>
+        <p class="slot-title">press_stapler_while_holding</p>
+        <p class="slot-meta">Placing a mouse onto a pad followed by pressing a static stapler on the opposite side of the table. 22.0% success.</p>
+      </div>
+      <div class="media-slot">
+        <p class="slot-tag">[ Placeholder &middot; Video ]</p>
+        <p class="slot-title">open_laptop_then_place_object_inside</p>
+        <p class="slot-meta">Opening a laptop lid followed by placing a container inside. 24.0% success.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>What to gather for this section.</strong> Upload MP4 or WebM clips (or animated GIFs) into <code>assets/media/</code> and swap each <code>.media-slot</code> block for a <code>&lt;video&gt;</code> element. Suggested checklist:</p>
+      <ol>
+        <li><strong>E1 aligned success</strong> &mdash; one representative pick-and-place where the prompted arm matches the model's default (e.g. "use the right arm" with target on the right).</li>
+        <li><strong>E1 conflict failure</strong> &mdash; a clear prior-domination failure (the case you mentioned: LingBot-VA grabbing the can on the left with the left hand while the prompt said "use the right hand"). One or two clips ideal.</li>
+        <li><strong>E1 conflict success</strong> (optional) &mdash; one of the 18 trials where the policy did follow the conflicting instruction, for contrast.</li>
+        <li><strong>E2 composed tasks</strong> &mdash; at least one failure rollout per composed pair (handover_then_place_phone_stand, press_stapler_while_holding, open_laptop_then_place_object_inside). A success clip per pair would add nice contrast but isn't required.</li>
+        <li><strong>Metadata per clip</strong> &mdash; trial index, prompt text, ground-truth expected behavior, observed outcome, seed if available. A short caption (1&ndash;2 sentences) pointing out what to watch for.</li>
+        <li><strong>Format</strong> &mdash; short loops (5&ndash;15s) compressed under ~3 MB each; MP4 (H.264) plays everywhere. Use a mute autoplay + loop attribute if the clips are silent.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="desiderata">
+    <h2>Four Desiderata for What Comes Next</h2>
+    <p>
+      We refer informally to the class of architectures attempting to satisfy these desiderata as
+      <strong>System Zero</strong>, to contrast with the S1/S2 framing. The name labels a direction, not
+      a specific model.
+    </p>
+
+    <div class="desiderata-grid">
+      <article class="des">
+        <h3>D1 &middot; Shared Representational Substrate</h3>
+        <p>
+          A candidate replacement should avoid producing reactive motor commands and deliberative plans through
+          separate subsystems communicating only through a bandwidth-limited interface. What matters is whether
+          deliberative context can influence motor selection <em>without traversing a lossy commit point</em>.
+        </p>
+      </article>
+
+      <article class="des">
+        <h3>D2 &middot; Temporal Structure That Doesn't Collapse Horizon onto Context Length</h3>
+        <p>
+          A candidate replacement should support long-horizon context through mechanisms whose cost scales more
+          favorably&mdash;intrinsic recurrent dynamics, structured memory, hierarchical compression, or others&mdash;
+          so horizon is not tied one-to-one to context-window tokens.
+        </p>
+      </article>
+
+      <article class="des">
+        <h3>D3 &middot; Continuous, Bidirectional Influence Between Motor Dynamics and Deliberative Context</h3>
+        <p>
+          A candidate replacement should admit continuous feedback from motor-level state into deliberative
+          reasoning, and from deliberative context into motor selection, on timescales comparable to the
+          reactive loop. Transient motor spikes should not corrupt the plan, but <em>sustained</em> motor
+          patterns should be able to reshape it.
+        </p>
+      </article>
+
+      <article class="des">
+        <h3>D4 &middot; Goal-Directed Persistence Under Perturbation</h3>
+        <p>
+          A shared-substrate architecture without an inductive bias toward goal-consistent trajectories risks
+          degenerating into an unconstrained recurrent memory that drifts under reactive pressure. Contractive
+          dynamics, Lyapunov structure, energy-based landscapes, explicit goal anchoring&mdash;some mechanism
+          that prevents such drift.
+        </p>
+      </article>
+    </div>
+
+    <p class="callout">
+      <strong>Status of D1&ndash;D4.</strong> These desiderata are diagnostic, not prescriptive. We conjecture
+      they capture important structural requirements, but we offer no proof of necessity, sufficiency, or minimality.
+    </p>
+  </section>
+
+  <section id="landscape">
+    <h2>Where Existing Architectures Sit</h2>
+    <p>
+      The desiderata are diagnostic: they tell us <em>how to read</em> existing and future architectures against
+      a shared checklist. Several entries depend on implementation choices and admit partial credit.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Architecture family</th><th>D1</th><th>D2</th><th>D3</th><th>D4</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>S1/S2 VLA/VA + LLM planner</td><td>No</td><td>No</td><td>No</td><td>Impl.</td></tr>
+          <tr><td>Long-context Transformer agent</td><td>Part.</td><td>No</td><td>Part.</td><td>Impl.</td></tr>
+          <tr><td>State-space / RNN embodied policy</td><td>Part.</td><td>Yes</td><td>Part.</td><td>Impl.</td></tr>
+          <tr><td>Hierarchical RL (subgoal commit)</td><td>No</td><td>Part.</td><td>No</td><td>Yes</td></tr>
+          <tr><td>World-model agents (dense feedback)</td><td>Part.</td><td>Part.</td><td>Part.</td><td>Dep.</td></tr>
+        </tbody>
+      </table>
+      <p class="caption">
+        Part. = partially achieved or implementation-dependent &middot; Impl. = implicit, not architecturally enforced &middot; Dep. = depends on implementation. Discussion aid, not a verdict.
+      </p>
+    </div>
+  </section>
+
+  <section id="benchmarks">
+    <h2>How Future Work Could Test Candidates</h2>
+    <p>
+      We describe two benchmark families briefly; each could be developed into a full benchmark by subsequent
+      work, with or without adopting our desiderata vocabulary.
+    </p>
+    <div class="bench-grid">
+      <article class="bench">
+        <h3>Benchmark Family 1 &middot; Cross-Scale Binding</h3>
+        <p>
+          Trials structured in three phases &mdash; a <em>context phase</em> that specifies a conditional
+          behavioral policy, a <em>delay phase</em> with a filler task to prevent trivial working-memory
+          retention, and an <em>execution phase</em> where the correct response depends on the earlier cue.
+          Useful metrics: conditional accuracy, context-decay curves over delay length, and a score isolating
+          trials where the correct response <em>contradicts</em> the reactive prior.
+        </p>
+      </article>
+
+      <article class="bench">
+        <h3>Benchmark Family 2 &middot; Representational Probes</h3>
+        <p>
+          A natural approach is to measure mutual information between substates of the model (slow vs. fast
+          components, early vs. late layers, learned hierarchies) and task-relevant reference signals
+          (current subgoal, ground-truth action, reactive event indicators) using established MI estimators.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section id="limits">
+    <h2>Limitations</h2>
+    <dl class="limits">
+      <dt>No solution, no validation.</dt>
+      <dd>We do not implement, train, or evaluate any candidate replacement architecture.</dd>
+
+      <dt>Desiderata are diagnostic, not proven.</dt>
+      <dd>We offer D1&ndash;D4 as starting vocabulary for evaluating candidate architectures, not as theorems.</dd>
+
+      <dt>Empirical scope.</dt>
+      <dd>The 98%&rarr;36% drop and 24.7% composed-OOD rate are limited to a single VA-model family on RoboTwin 2.0.</dd>
+
+      <dt>Analytical vs. causal claims.</dt>
+      <dd>Our analysis is <em>analytical</em>: we argue that failure modes follow from the decomposition, not that no interface engineering could ever mask them.</dd>
+    </dl>
+  </section>
+
+  <section id="cite">
+    <h2>Cite</h2>
+<pre class="cite-block"><code>@misc{liu2026systemzero,
+  title  = {Why System 1/2 Cannot Plan: Structural Failures and Desiderata for Embodied Agents},
+  author = {Liu, Bingyang Kelvin and Chen, Ziyu Patrick},
+  year   = {2026},
+  note   = {Preprint},
+  institution = {University of Illinois Urbana-Champaign}
+}</code></pre>
+    <p>
+      <a class="btn btn-primary" href="assets/manuscript.pdf">Download the preprint (PDF)</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 Bingyang Kelvin Liu &middot; Ziyu Patrick Chen. Preprint. All rights reserved by the authors.</p>
+    <p><a href="mailto:bl59@illinois.edu">bl59@illinois.edu</a> &middot; <a href="mailto:ziyu17@illinois.edu">ziyu17@illinois.edu</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

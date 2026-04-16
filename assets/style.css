@@ -1,0 +1,466 @@
+/* Simple, readable styling for System Zero site */
+
+:root {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --ink: #1f1d1a;
+  --muted: #5a5852;
+  --rule: #e6e3dc;
+  --accent: #8a3a1f;
+  --accent-soft: #f4ece5;
+  --callout-bg: #f6f3ec;
+  --code-bg: #f2efe8;
+  --maxw: 60vw;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  font-size: 19px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Charter", "Iowan Old Style", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: var(--maxw);
+  min-width: min(100%, 32rem);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  border-bottom: 1px solid var(--rule);
+  padding: 4rem 0 2.5rem;
+  background: var(--surface);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0 0 0.75rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+.site-header h1 {
+  font-size: 2.1rem;
+  line-height: 1.2;
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin: 0 0 1.5rem;
+  font-style: italic;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.authors {
+  margin: 0 0 0.15rem;
+  font-size: 1rem;
+}
+
+.authors a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.authors a:hover { border-color: var(--accent); color: var(--accent); }
+
+.affiliation {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin: 0 0 1.75rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: #6e2d17;
+  border-color: #6e2d17;
+  color: #fff;
+}
+
+/* ---------- Main content ---------- */
+
+main { padding: 4rem 0 4rem; }
+
+section { margin: 0 0 3rem; }
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 3rem 0 1rem;
+  letter-spacing: -0.005em;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.5rem;
+}
+
+section:first-of-type h2 { margin-top: 2rem; }
+
+h3 {
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin: 0 0 0.6rem;
+}
+
+p { margin: 0 0 1rem; }
+
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+a:hover { color: #6e2d17; }
+
+ul, ol { padding-left: 1.25rem; margin: 0 0 1rem; }
+li { margin: 0.25rem 0; }
+
+em { color: var(--ink); }
+
+strong { font-weight: 600; }
+
+/* ---------- Callout ---------- */
+
+.callout {
+  background: var(--callout-bg);
+  border-left: 3px solid var(--accent);
+  padding: 0.9rem 1.1rem;
+  font-size: 0.97rem;
+  color: var(--ink);
+  border-radius: 0 4px 4px 0;
+  margin: 1.25rem 0;
+}
+
+/* ---------- Stat grid ---------- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.stat {
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+}
+
+.stat-num {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 0.25rem;
+  font-variant-numeric: tabular-nums;
+  font-family: "Iowan Old Style", "Charter", Georgia, serif;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* ---------- Findings ---------- */
+
+.finding {
+  margin: 0 0 1.75rem;
+  padding: 0 0 1.25rem;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.finding:last-of-type { border-bottom: none; }
+
+/* ---------- Desiderata grid ---------- */
+
+.desiderata-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1rem 0 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .desiderata-grid { grid-template-columns: 1fr; }
+}
+
+.des {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1rem 1.1rem;
+}
+
+.des h3 {
+  color: var(--accent);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.des p { font-size: 0.95rem; margin: 0; }
+
+/* ---------- Benchmarks ---------- */
+
+.bench-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.bench {
+  border: 1px solid var(--rule);
+  padding: 1rem 1.1rem;
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.bench p { font-size: 0.95rem; margin: 0; }
+
+/* ---------- Table ---------- */
+
+.table-wrap {
+  margin: 1rem 0 1.5rem;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  background: var(--surface);
+}
+
+thead th {
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  border-bottom: 2px solid var(--ink);
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+tbody td {
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+tbody tr:last-child td { border-bottom: none; }
+
+.caption {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+  font-style: italic;
+}
+
+/* ---------- Figure placeholder ---------- */
+
+.figure-placeholder {
+  margin: 1.5rem 0;
+}
+
+.placeholder {
+  border: 1px dashed var(--rule);
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  color: #6a4532;
+}
+
+.placeholder-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin: 0 0 0.4rem;
+}
+
+.placeholder p:last-child { margin: 0; font-size: 0.92rem; }
+
+/* ---------- Generated diagrams ---------- */
+
+.diagram {
+  margin: 1.75rem 0;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+.diagram svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ---------- Media slots (experimental videos etc.) ---------- */
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.media-slot {
+  border: 1px dashed var(--rule);
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 1rem;
+  min-height: 9rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #6a4532;
+  font-size: 0.9rem;
+}
+
+.media-slot .slot-tag {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin: 0 0 0.4rem;
+}
+
+.media-slot .slot-title {
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
+}
+
+.media-slot .slot-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ---------- Limits ---------- */
+
+.limits dt {
+  font-weight: 600;
+  margin-top: 0.9rem;
+}
+
+.limits dd {
+  margin: 0.2rem 0 0;
+  padding-left: 0;
+  color: var(--muted);
+}
+
+/* ---------- Cite block ---------- */
+
+.cite-block {
+  background: #2a2822;
+  padding: 1rem 1.1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  font-family: "SF Mono", "Menlo", "Consolas", "Courier New", monospace;
+  line-height: 1.5;
+  color: #f2efe8;
+  margin: 0 0 1.25rem;
+  border: 1px solid var(--rule);
+}
+
+.cite-block code { color: inherit; }
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding: 2rem 0 3rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  background: var(--surface);
+}
+
+.site-footer p { margin: 0.2rem 0; }
+
+.site-footer a { color: var(--muted); }
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 600px) {
+  html { font-size: 17px; }
+  .site-header { padding: 2.5rem 0 2rem; }
+  .site-header h1 { font-size: 1.7rem; }
+  .subtitle { font-size: 1.1rem; }
+  h2 { font-size: 1.25rem; }
+}
+
+/* ---------- Reduced motion / dark mode consideration ---------- */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161513;
+    --surface: #1d1c1a;
+    --ink: #eae7df;
+    --muted: #a8a49a;
+    --rule: #33312d;
+    --accent: #d88a5f;
+    --accent-soft: #2a231d;
+    --callout-bg: #22201c;
+    --code-bg: #22201c;
+  }
+  .btn-primary { color: #161513; }
+  .btn-primary:hover { color: #161513; background: #eaa079; border-color: #eaa079; }
+  .placeholder { color: #e2b99a; }
+  .cite-block { background: #0f0e0d; color: #eae7df; border-color: #33312d; }
+}
