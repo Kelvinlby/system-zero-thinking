@@ -142,9 +142,9 @@
         behaviors were evaluated on 50 trials each:
       </p>
       <ul>
-        <li><em>handover_then_place_phone_stand</em> &mdash; 28.0%</li>
-        <li><em>press_stapler_while_holding</em> &mdash; 22.0%</li>
-        <li><em>open_laptop_then_place_object_inside</em> &mdash; 24.0%</li>
+        <li><em><code>handover_then_place_phone_stand</code></em> &mdash; 28.0%</li>
+        <li><em><code>press_stapler_while_holding</code></em> &mdash; 22.0%</li>
+        <li><em><code>open_laptop_then_place_object_inside</code></em> &mdash; 24.0%</li>
       </ul>
       <p>Mean: <strong>24.7%</strong> &mdash; a significant degradation from the &gt;90% in-distribution baseline.</p>
     </article>
@@ -160,21 +160,37 @@
 
     <h3>Experiment 1 &middot; Limb-instruction following (LingBot-VA)</h3>
     <div class="media-grid">
-      <div class="media-slot">
-        <video width="320" height="384" controls>
-          <source src="assets/media/aligned.mp4" type="video/mp4">
-          Your browser does not support videos.
-        </video>
-        <p class="slot-title">Aligned trial &mdash; success</p>
-        <p class="slot-meta">Instruction matches the model's default arm choice. Representative of the 49/50 (98.0%) success regime.</p>
+      <div class="media-slot media-slot-horizontal">
+        <div class="slot-video">
+          <video width="320" height="384" controls>
+            <source src="assets/media/aligned.mp4" type="video/mp4">
+            Your browser does not support videos.
+          </video>
+        </div>
+        <div class="slot-content">
+          <p class="slot-title">Aligned trial &mdash; success</p>
+          <p class="slot-meta">Instruction matches the model's default arm choice. Representative of the 49/50 (98.0%) success regime.</p>
+          <blockquote class="slot-prompt">
+            <span class="prompt-label">Instruction:</span>
+            "Use the <strong>left arm</strong> to place the rectangular playingcards case with patterns left of the medium bread loaf."
+          </blockquote>
+        </div>
       </div>
-      <div class="media-slot">
-        <video width="320" height="384" controls>
-          <source src="assets/media/conflicted.mp4" type="video/mp4">
-          Your browser does not support videos.
-        </video>
-        <p class="slot-title">Conflict trial &mdash; prior override</p>
-        <p class="slot-meta">Target is on the left; prompt says "use the right arm"; policy grabs with left anyway. Representative of the 18/50 (36.0%) failure regime.</p>
+      <div class="media-slot media-slot-horizontal">
+        <div class="slot-video">
+          <video width="320" height="384" controls>
+            <source src="assets/media/conflicted.mp4" type="video/mp4">
+            Your browser does not support videos.
+          </video>
+        </div>
+        <div class="slot-content">
+          <p class="slot-title">Conflict trial &mdash; prior override</p>
+          <p class="slot-meta">Target is on the left; prompt says "use the right arm"; policy grabs with left anyway. Representative of the 18/50 (36.0%) failure regime.</p>
+          <blockquote class="slot-prompt">
+            <span class="prompt-label">Instruction:</span>
+            "Use the <strong>right arm</strong> to place the rectangular playingcards case with patterns left of the medium bread loaf."
+          </blockquote>
+        </div>
       </div>
     </div>
 
@@ -182,32 +198,21 @@
     <div class="media-grid">
       <div class="media-slot">
         <p class="slot-tag">Composed Task 1</p>
-        <p class="slot-title">handover_then_place_phone_stand</p>
+        <p class="slot-title"><code>handover_then_place_phone_stand</code></p>
         <p class="slot-meta">Bimanual microphone handover followed by placing a phone onto a stand. 28.0% success.</p>
       </div>
       <div class="media-slot">
         <p class="slot-tag">Composed Task 2</p>
-        <p class="slot-title">press_stapler_while_holding</p>
+        <p class="slot-title"><code>press_stapler_while_holding</code></p>
         <p class="slot-meta">Placing a mouse onto a pad followed by pressing a static stapler on the opposite side of the table. 22.0% success.</p>
       </div>
       <div class="media-slot">
         <p class="slot-tag">Composed Task 3</p>
-        <p class="slot-title">open_laptop_then_place_object_inside</p>
+        <p class="slot-title"><code>open_laptop_then_place_object_inside</code></p>
         <p class="slot-meta">Opening a laptop lid followed by placing a container inside. 24.0% success.</p>
       </div>
     </div>
 
-    <div class="callout">
-      <p><strong>What to gather for this section.</strong> Upload MP4 or WebM clips (or animated GIFs) into <code>assets/media/</code> and swap each <code>.media-slot</code> block for a <code>&lt;video&gt;</code> element. Suggested checklist:</p>
-      <ol>
-        <li><strong>E1 aligned success</strong> &mdash; one representative pick-and-place where the prompted arm matches the model's default (e.g. "use the right arm" with target on the right).</li>
-        <li><strong>E1 conflict failure</strong> &mdash; a clear prior-domination failure (the case you mentioned: LingBot-VA grabbing the can on the left with the left hand while the prompt said "use the right hand"). One or two clips ideal.</li>
-        <li><strong>E1 conflict success</strong> (optional) &mdash; one of the 18 trials where the policy did follow the conflicting instruction, for contrast.</li>
-        <li><strong>E2 composed tasks</strong> &mdash; at least one failure rollout per composed pair (handover_then_place_phone_stand, press_stapler_while_holding, open_laptop_then_place_object_inside). A success clip per pair would add nice contrast but isn't required.</li>
-        <li><strong>Metadata per clip</strong> &mdash; trial index, prompt text, ground-truth expected behavior, observed outcome, seed if available. A short caption (1&ndash;2 sentences) pointing out what to watch for.</li>
-        <li><strong>Format</strong> &mdash; short loops (5&ndash;15s) compressed under ~3 MB each; MP4 (H.264) plays everywhere. Use a mute autoplay + loop attribute if the clips are silent.</li>
-      </ol>
-    </div>
   </section>
 
   <section id="desiderata">
