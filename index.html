@@ -22,6 +22,7 @@
     <nav class="actions">
       <a class="btn btn-primary" href="assets/manuscript.pdf">Read the PDF</a>
       <a class="btn" href="#findings">Findings</a>
+      <a class="btn" href="#why-no-reasoning">Why It Fails</a>
       <a class="btn" href="#experiments-media">Footage</a>
       <a class="btn" href="#desiderata">Desiderata</a>
     </nav>
@@ -147,6 +148,74 @@
       <p>Mean: <strong>24.7%</strong> &mdash; a significant degradation from the &gt;90% in-distribution baseline.</p>
     </article>
 
+  </section>
+
+  <section id="why-no-reasoning">
+    <h2>Why These Failures Disable Real Reasoning</h2>
+    <p>
+      The three failure modes are not independent bugs. Together they sever the dependency that
+      long-horizon reasoning <em>is</em>: the requirement that the correct motor action at time
+      <em>t</em> depend on deliberative context accumulated at time <em>t&minus;k</em> for large
+      <em>k</em>. The S1/S2 decomposition breaks that dependency at four points.
+    </p>
+
+    <ol class="reasoning-chain">
+      <li>
+        <strong>Reasoning happens in a space disconnected from the body.</strong>
+        The planner has no access to the reactive policy's competence manifold, so it can reason
+        that the agent <em>should</em> do something without being able to tell whether it is
+        executable. Deliberation is ungrounded by construction.
+      </li>
+      <li>
+        <strong>The abstraction boundary is frozen.</strong>
+        Whether a variable (e.g., body orientation) is strategic or a motor detail depends on
+        context. A two-system split must assign each degree of freedom <em>a priori</em>, so
+        reasoning that needs to reclaim a "motor" variable strategically has no path to do so.
+      </li>
+      <li>
+        <strong>The planner always reasons over stale state.</strong>
+        Motor-level events must modulate deliberative priorities in real time. In an S1/S2 loop,
+        S2 perceives an abstraction of the motor state at a fundamentally slower timescale &mdash;
+        by the time the plan updates, the situation has moved on.
+      </li>
+      <li>
+        <strong>Whatever reasoning survives is overwritten by the prior.</strong>
+        Even when S2 produces correct fine-grained instructions, S1's training-distribution prior
+        dominates (the 98%&rarr;36% collapse). Deliberative conclusions don't reliably reach
+        behavior &mdash; so reasoning, even when correct, is behaviorally inert.
+      </li>
+    </ol>
+
+    <p>
+      A further problem compounds these: context cannot accumulate. The planner's effective horizon
+      is pinned to its context window, so long-range reasoning has nowhere to live in the first
+      place.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>System</th><th>Type</th><th>Effective Horizon</th><th>Limiting Factor</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Veo 3</td><td>VA backbone</td><td>~8 s generated video</td><td>Video generation length</td></tr>
+          <tr><td>Wan 2.5</td><td>VA backbone</td><td>~10 s generated video</td><td>Video generation length</td></tr>
+          <tr><td>&pi;<sub>0</sub></td><td>VLA</td><td>~100&ndash;180 s episodes</td><td>VLM context window</td></tr>
+          <tr><td>LVP</td><td>Planner</td><td>Short video plan</td><td>Diffusion output length</td></tr>
+          <tr><td>Lumine</td><td>VLA (open-world)</td><td>20 recent image-action pairs</td><td>VLM context window</td></tr>
+        </tbody>
+      </table>
+      <p class="caption">Effective planning horizons of representative S1/S2 modules.</p>
+    </div>
+
+    <p class="callout">
+      <strong>The synthesis.</strong> These are not separate engineering shortcomings. They are
+      what you get when you factor a single cognitive-motor process into two communicating
+      subsystems connected by a lossy, unidirectional channel. Reasoning that must continuously
+      ground in motor state, reshape the abstraction boundary, and persist across long horizons
+      cannot survive that factoring &mdash; regardless of how capable either module becomes on
+      its own.
+    </p>
   </section>
 
   <section id="experiments-media">
